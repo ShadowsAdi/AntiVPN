@@ -55,7 +55,7 @@ new g_szAPIKey[64]
 
 new iVault;
 
-new g_szIP[35][Pdata];
+new g_szIP[45][Pdata];
 new g_iCurrentIP = 10;
 
 new Array:g_aSkipCheck
@@ -65,6 +65,19 @@ new Array:g_aDetectedIPs
 new Array:g_aIPDetected
 
 new EzHttpRequest:g_httpRequestID = EzHttpRequest:-1;
+
+public plugin_precache()
+{
+	g_aSkipCheck = ArrayCreate(MAX_NAME_LENGTH)
+ 
+	g_aCountryBlock = ArrayCreate(4)
+ 
+	g_aIPBlacked = ArrayCreate(20)
+ 
+	g_aDetectedIPs = ArrayCreate(Data)
+
+	g_aIPDetected = ArrayCreate(30)
+}
 
 public plugin_init()
 {
@@ -94,16 +107,6 @@ public plugin_init()
 	RegisterHookChain(RH_SV_ConnectClient, "Hook_SV_ConnectClient_pre");
 	register_clcmd("say", "check_say");
 	register_clcmd("say_team", "check_say");
-
-	g_aSkipCheck = ArrayCreate(MAX_NAME_LENGTH)
- 
-	g_aCountryBlock = ArrayCreate(4)
- 
-	g_aIPBlacked = ArrayCreate(20)
- 
-	g_aDetectedIPs = ArrayCreate(Data)
-
-	g_aIPDetected = ArrayCreate(30)
  
 	set_task(5.0, "task_check_players", .flags = "b")
 }
@@ -202,7 +205,7 @@ public client_connectex(id, const name[], const ip[], reason[128])
 	new sIP[Data]
 	new sUserIP[28]
 
-	if(id == -1)
+	if(id == -1 || !g_aIPDetected)
 		return PLUGIN_CONTINUE;
  
 	get_user_ip(id, sUserIP, charsmax(sUserIP), 1)
