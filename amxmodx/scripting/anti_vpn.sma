@@ -495,7 +495,7 @@ public CallbackFunc(EzHttpRequest:httpReqID)
 		return
 	}
 
-	new szBuffer[512]
+	new szBuffer[1024]
 	ezhttp_get_data(httpReqID, szBuffer, charsmax(szBuffer))
 
 	new szIP[MAX_IP_LENGTH + 3]
